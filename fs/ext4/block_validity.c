@@ -81,6 +81,7 @@ static int add_system_zone(struct ext4_sb_info *sbi,
 		return -ENOMEM;
 	new_entry->start_blk = start_blk;
 	new_entry->count = count;
+	new_entry->ino = ino;
 	new_node = &new_entry->node;
 
 	rb_link_node(new_node, parent, n);
