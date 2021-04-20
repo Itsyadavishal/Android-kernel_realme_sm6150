@@ -1996,6 +1996,7 @@ static int dwc3_gadget_wakeup_int(struct dwc3 *dwc)
 	case DWC3_LINK_STATE_RESET:
 	case DWC3_LINK_STATE_RX_DET:	/* in HS, means Early Suspend */
 	case DWC3_LINK_STATE_U3:	/* in HS, means SUSPEND */
+	case DWC3_LINK_STATE_U2:	/* in HS, means Sleep (L1) */
 	case DWC3_LINK_STATE_RESUME:
 		break;
 	case DWC3_LINK_STATE_U1:
@@ -3699,7 +3700,6 @@ static void dwc3_gadget_linksts_change_interrupt(struct dwc3 *dwc,
 			u32	reg;
 
 			switch (dwc->link_state) {
-			case DWC3_LINK_STATE_U1:
 			case DWC3_LINK_STATE_U2:
 				reg = dwc3_readl(dwc->regs, DWC3_DCTL);
 				u1u2 = reg & (DWC3_DCTL_INITU2ENA
@@ -3722,10 +3722,6 @@ static void dwc3_gadget_linksts_change_interrupt(struct dwc3 *dwc,
 	}
 
 	switch (next) {
-	case DWC3_LINK_STATE_U1:
-		if (dwc->speed == USB_SPEED_SUPER)
-			dwc3_suspend_gadget(dwc);
-		break;
 	case DWC3_LINK_STATE_U2:
 	case DWC3_LINK_STATE_U3:
 		dwc3_suspend_gadget(dwc);
